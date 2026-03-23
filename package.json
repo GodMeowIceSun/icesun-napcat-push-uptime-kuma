@@ -1,24 +1,24 @@
 {
-  "name": "napcat-plugin-template",
-  "plugin": "插件模板",
-  "version": "1.0.0",
+  "name": "icesun-napcat-push-uptime-kuma",
+  "plugin": "IceSunNapCat被动推送UptimeKuma插件",
+  "version": "1.0.0-SNAPSHOT",
   "type": "module",
   "main": "index.mjs",
-  "description": "NapCat 插件开发模板 - 快速开始你的插件开发",
-  "author": "Your Name",
+  "description": "支持定时发送 Uptime Kuma push 请求，包含当前 NapCat 状态",
+  "author": "GodMeowIceSun(icesun@icesun.cn)",
   "license": "MIT",
   "keywords": [
     "napcat",
     "plugin",
     "qq",
-    "template"
+    "UptimeKuma"
   ],
   "napcat": {
     "tags": [
-      "工具"
+      "工具", "监控"
     ],
     "minVersion": "4.14.0",
-    "homepage": ""
+    "homepage": "https://github.com/GodMeowIceSun/icesun-napcat-push-uptime-kuma"
   },
   "dependencies": {
     "napcat-types": "0.0.16"

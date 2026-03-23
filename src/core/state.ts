@@ -15,6 +15,7 @@ import path from 'path';
 import type { NapCatPluginContext, PluginLogger } from 'napcat-types/napcat-onebot/network/plugin/types';
 import { DEFAULT_CONFIG } from '../config';
 import type { PluginConfig, GroupConfig } from '../types';
+import {UptimeKumaService} from "../services/uptime-kuma-service";
 
 // ==================== 配置清洗工具 ====================
 
@@ -48,7 +49,9 @@ function sanitizeConfig(raw: unknown): PluginConfig {
         }
     }
 
-    // TODO: 在这里添加你的配置项清洗逻辑
+    // 在这里添加你的配置项清洗逻辑
+    if (typeof raw.pushUrl === 'string') out.pushUrl = raw.pushUrl;
+    if (typeof raw.heartbeatInterval === 'number') out.heartbeatInterval = raw.heartbeatInterval;
 
     return out;
 }
@@ -58,6 +61,8 @@ function sanitizeConfig(raw: unknown): PluginConfig {
 class PluginState {
     /** NapCat 插件上下文（init 后可用） */
     private _ctx: NapCatPluginContext | null = null;
+
+    uptimeKumaService: UptimeKumaService | null = null;
 
     /** 插件配置 */
     config: PluginConfig = { ...DEFAULT_CONFIG };
@@ -100,6 +105,7 @@ class PluginState {
         this.loadConfig();
         this.ensureDataDir();
         this.fetchSelfId();
+        this.uptimeKumaService = new UptimeKumaService(this.ctx)
     }
 
     /**

@@ -25,6 +25,12 @@ export interface PluginConfig {
     /** 按群的单独配置 */
     groupConfigs: Record<string, GroupConfig>;
     // TODO: 在这里添加你的插件配置项
+
+    /** Uptime Kuma 推送URL */
+    pushUrl: string;
+
+    /** 心跳间隔（秒） */
+    heartbeatInterval: number;
 }
 
 /**
@@ -48,4 +54,27 @@ export interface ApiResponse<T = unknown> {
     message?: string;
     /** 响应数据（仅成功时返回） */
     data?: T;
+}
+
+export interface NapCatStatus {
+    online: boolean;
+    cpuUsage: number;
+    memUsage: number;
+    diskRootUsage: number;
+    diskDataUsage: number;
+}
+
+export interface UptimeKumaPushPayload {
+    status: 'up' | 'down';
+    msg: string;
+    ping: number;
+}
+
+export interface UptimeKumaPushParam {
+    /** Uptime Kuma 服务器地址 */
+    endpoint: string;
+    /** 推送令牌 */
+    pushToken: string;
+    /** 推送数据 */
+    payload: UptimeKumaPushPayload;
 }

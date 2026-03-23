@@ -20,18 +20,17 @@
  */
 
 import type {
-    PluginModule,
-    PluginConfigSchema,
-    PluginConfigUIController,
     NapCatPluginContext,
+    PluginConfigSchema,
+    PluginModule,
 } from 'napcat-types/napcat-onebot/network/plugin/types';
-import { EventType } from 'napcat-types/napcat-onebot/event/index';
+import {EventType} from 'napcat-types/napcat-onebot/event/index';
 
-import { buildConfigSchema } from './config';
-import { pluginState } from './core/state';
-import { handleMessage } from './handlers/message-handler';
-import { registerApiRoutes } from './services/api-service';
-import type { PluginConfig } from './types';
+import {buildConfigSchema} from './config';
+import {pluginState} from './core/state';
+import {handleMessage} from './handlers/message-handler';
+import {registerApiRoutes} from './services/api-service';
+import type {PluginConfig} from './types';
 
 // ==================== 配置 UI Schema ====================
 
@@ -59,6 +58,12 @@ export const plugin_init: PluginModule['plugin_init'] = async (ctx) => {
 
         // 4. 注册 API 路由
         registerApiRoutes(ctx);
+
+        if (pluginState.config.enabled && pluginState.config.pushUrl.length > 0) {
+            pluginState.uptimeKumaService?.startPush(pluginState.config.pushUrl, pluginState.config.heartbeatInterval)
+        } else {
+            pluginState.uptimeKumaService?.stopPush()
+        }
 
         ctx.logger.info('插件初始化完成');
     } catch (error) {
@@ -115,6 +120,12 @@ export const plugin_get_config: PluginModule['plugin_get_config'] = async (ctx) 
 export const plugin_set_config: PluginModule['plugin_set_config'] = async (ctx, config) => {
     pluginState.replaceConfig(config as PluginConfig);
     ctx.logger.info('配置已通过 WebUI 更新');
+    ctx.logger.debug('config', config)
+    if (pluginState.config.enabled && pluginState.config.pushUrl.length > 0) {
+        pluginState.uptimeKumaService?.startPush(pluginState.config.pushUrl, pluginState.config.heartbeatInterval)
+    } else {
+        pluginState.uptimeKumaService?.stopPush()
+    }
 };
 
 /**
@@ -125,8 +136,13 @@ export const plugin_on_config_change: PluginModule['plugin_on_config_change'] = 
     ctx, ui, key, value, currentConfig
 ) => {
     try {
-        pluginState.updateConfig({ [key]: value });
+        pluginState.updateConfig({[key]: value});
         ctx.logger.debug(`配置项 ${key} 已更新`);
+        if (pluginState.config.enabled && pluginState.config.pushUrl.length > 0) {
+            pluginState.uptimeKumaService?.startPush(pluginState.config.pushUrl, pluginState.config.heartbeatInterval)
+        } else {
+            pluginState.uptimeKumaService?.stopPush()
+        }
     } catch (err) {
         ctx.logger.error(`更新配置项 ${key} 失败:`, err);
     }

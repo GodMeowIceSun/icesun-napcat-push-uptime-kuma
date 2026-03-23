@@ -18,7 +18,8 @@
     },
     "include": [
         "src/**/*.ts",
-        "src/**/*.json"
+        "src/**/*.json",
+        "env.d.ts"
     ],
     "exclude": [
         "node_modules",
