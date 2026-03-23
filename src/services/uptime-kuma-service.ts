@@ -80,7 +80,7 @@ export class UptimeKumaService {
             const response = await fetch(url.toString(), {
                 method: 'GET',
                 headers: {
-                    'User-Agent': 'icesun-napcat-push-uptime-kuma/1.0.0'
+                    'User-Agent': 'napcat-plugin-icesun-push-uptime-kuma/1.0.0'
                 }
             });
 
